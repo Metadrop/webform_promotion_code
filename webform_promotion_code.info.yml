@@ -1,0 +1,7 @@
+name: 'Webform Promotion Code'
+type: module
+description: 'Provides a promotion code Webform element.'
+package: 'Webform'
+core: 8.x
+dependencies:
+  - 'webform:webform'

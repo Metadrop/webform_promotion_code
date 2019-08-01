@@ -1,0 +1,10 @@
+webform.admin.promotion_code_style:
+  version: VERSION
+  css:
+    theme:
+      css/webform_promotion_code.css: {}
+webform.admin.promotion_code_js:
+  js:
+    js/webform_promotion_code.js: {}
+  dependencies:
+    - core/drupal
