@@ -4,7 +4,10 @@
       
       function generateRandomCode(length) {
         var result           = '';
-        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var characters = $('input[name="properties[code_pattern]"]').val();
+        if(!characters || characters === "") {
+            characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        }
         var charactersLength = characters.length;
         for ( var i = 0; i < length; i++ ) {
            result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -13,6 +16,11 @@
       }
       
       function generateRandomCodes(amount) {
+        var codeLength = $('input[name="properties[code_length]"]').val();
+        if(!codeLength || codeLength === "") {
+            codeLength = 6;
+        }
+        
         var newValue = $('textarea[name="properties[codes]"]').val();
         if(newValue !== "") {
           newValue = newValue.split("\n");
@@ -20,7 +28,7 @@
           newValue = [];
         }
         for (var i = 0; i < amount; i++) {
-          var randomCode = generateRandomCode(6);
+          var randomCode = generateRandomCode(codeLength);
           newValue.push(randomCode);
         }
         
