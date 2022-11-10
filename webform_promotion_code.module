@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file
+ * Contains webform_promotion_code module.
+ */
+
+use Drupal\webform\WebformInterface;
+use Drupal\webform\WebformSubmissionInterface;
+use Drupal\webform_promotion_code\Helpers\WinnerCodeHelper;
+use Drupal\webform\Entity\Webform;
+
+/**
+ * Implements hook_ENTITY_insert().
+ *
+ * @var \Drupal\webform\WebformSubmissionInterface $webform_submission
+ */
+function webform_promotion_code_webform_submission_insert(WebformSubmissionInterface $webform_submission) {
+
+  // Check that the user inserted the winner code and redirect to winner page.
+  $redirection = NULL;
+  foreach ($webform_submission->getWebform()->getElementsDecoded() as $key => $element) {
+    if (WinnerCodeHelper::isWinnerCodeField($element) && WinnerCodeHelper::hasWinnerCodeInserted($key, $webform_submission)) {
+
+      $webform_submission->setElementData(WinnerCodeHelper::WINNER_SUBMISSION_ELEMENT_NAME, 1);
+      $webform_submission->save();
+      $redirection = WinnerCodeHelper::getUrlConfirmWinnerCode($element);
+    }
+    elseif (WinnerCodeHelper::isWinnerCodeField($element)) {
+      $webform_submission->setElementData(WinnerCodeHelper::WINNER_SUBMISSION_ELEMENT_NAME, 0);
+      $webform_submission->save();
+      $redirection = WinnerCodeHelper::getUrlFailWinnerCode($element);
+    }
+  }
+
+  if (isset($redirection)) {
+    $webform_submission->getWebform()->setSettingOverride('confirmation_type', WebformInterface::CONFIRMATION_URL);
+    $webform_submission->getWebform()->setSettingOverride('confirmation_url', $redirection);
+  }
+
+}
+
+/**
+ * Implements hook_ENTITY_update().
+ */
+function webform_promotion_code_webform_update(Webform $webform) {
+  // Add winner submission field to the webform to know which user submitted
+  // the right winner number.
+  if (WinnerCodeHelper::hasWinnerCodeField($webform) && !WinnerCodeHelper::hasFieldWinnerSubmission($webform)) {
+    WinnerCodeHelper::addWinnerSubmissionField($webform);
+  }
+}

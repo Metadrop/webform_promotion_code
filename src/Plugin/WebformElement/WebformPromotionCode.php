@@ -29,6 +29,10 @@ class WebformPromotionCode extends WebformElementBase {
     return parent::getDefaultProperties() + [
       'codes' => '',
       'amount' => 100,
+      'activate_winner_code' => '',
+      'winner_codes' => '',
+      'winner_url_confirmation' => '',
+      'winner_url_no_confirmation' => '',
       'code_length' => 6,
       'code_pattern' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
     ];
@@ -48,6 +52,45 @@ class WebformPromotionCode extends WebformElementBase {
       '#type' => 'textarea',
       '#title' => $this->t('Valid promotion code list'),
       '#description' => $this->t('Specify the list of valid promotion codes. Enter one code per line.'),
+    ];
+
+    $form['promotion_code']['activate_winner_code'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Activate winner code'),
+      '#description' => $this->t('Check if you want to use Winner Code.'),
+    ];
+
+    $form['promotion_code']['winner_codes'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Winner code list'),
+      '#description' => $this->t('Specify the list of winner codes. Enter one code per line.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="properties[activate_winner_code]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['promotion_code']['winner_url_confirmation'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Url to be redirected for winners'),
+      '#description' => $this->t('You can use external url (http://example.com/winner) or internal url (/node/node_id).'),
+      '#states' => [
+        'visible' => [
+          ':input[name="properties[activate_winner_code]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['promotion_code']['winner_url_no_confirmation'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Url to be redirected for NO winners'),
+      '#description' => $this->t('You can use external url (http://example.com/winner) or internal url (/node/node_id).'),
+      '#states' => [
+        'visible' => [
+          ':input[name="properties[activate_winner_code]"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     $form['promotion_code']['amount'] = [
